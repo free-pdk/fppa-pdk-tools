@@ -1,0 +1,240 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+#include "pdkformat.h"
+
+int32_t pdkhdrlen(uint8_t* datain, uint32_t datainlen)
+{
+  if( datainlen<0x100 )
+    return -1;
+
+  uint8_t* hdrdata = datain;
+
+  uint32_t version = *((uint32_t*)&hdrdata[0x08]);
+
+  uint32_t marker  = *((uint32_t*)&hdrdata[0x00]);
+
+  if( 0xFFAA5512 != marker )
+    return -2;
+
+  uint32_t extrahdr = *((uint16_t*)&hdrdata[0x26]) +
+                      *((uint16_t*)&hdrdata[0x28]) +
+                      *((uint16_t*)&hdrdata[0x2C]) +
+                      *((uint16_t*)&hdrdata[0xD0]);
+
+  if( version>=0x1c )
+    extrahdr += hdrdata[0x49];
+
+  return(0x100 + extrahdr);
+}
+
+int32_t depdk(uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t dataoutlen)
+{
+  if( datainlen<0x100 )
+    return -1;
+    
+  uint8_t* hdrdata = datain;
+
+  uint32_t version = *((uint32_t*)&hdrdata[0x08]);
+  uint32_t datalen = *((uint32_t*)&hdrdata[0x20]);
+
+  uint32_t extrahdr = *((uint16_t*)&hdrdata[0x26]) +
+                      *((uint16_t*)&hdrdata[0x28]) +
+                      *((uint16_t*)&hdrdata[0x2C]) +
+                      *((uint16_t*)&hdrdata[0xD0]);
+
+  if( version>=0x1c )
+    extrahdr += hdrdata[0x49];
+
+  uint16_t key[0x10];
+  memcpy( key, &hdrdata[0xE0], sizeof(key) );
+
+  uint16_t kxorw7C92 = key[3]^key[14];
+  uint16_t kxorw7E8A = key[7]^key[15];
+
+  if( (version>=0x15) && (version<=0x17) ) {
+    kxorw7C92 ^= 0x1234; kxorw7E8A ^= 0x5678;
+  }
+  
+  if( dataoutlen<datalen )
+    return -2;
+
+  uint16_t keyindex = 0;
+
+  for( uint32_t fullpos=0; fullpos<datalen; fullpos+=32 ) {
+    uint16_t data[32];
+    memcpy( data, datain + 0x100 + extrahdr + fullpos*2, sizeof(data) );
+
+    uint32_t dataptr = 0;
+    for( uint32_t j=0; j<4; j++ ) {
+      uint16_t tmp_xor_key1;
+      uint16_t tmp_xor_key2;
+
+      keyindex += kxorw7C92;
+      tmp_xor_key1 = data[dataptr];
+      data[dataptr] += key[keyindex&0xF];
+      dataptr++;
+      key[fullpos&0xF] ^= tmp_xor_key1;
+
+      keyindex += tmp_xor_key1;
+      tmp_xor_key2 = data[dataptr];
+      data[dataptr] = (data[dataptr] + kxorw7E8A ) ^ key[keyindex&0xF];
+      dataptr++;
+      key[kxorw7E8A&0xF] ^= kxorw7C92;
+
+      keyindex ^= tmp_xor_key2;
+      kxorw7C92 = data[dataptr];
+      data[dataptr] += key[keyindex&0xF]; 
+      dataptr++;
+      key[kxorw7E8A&0xF] ^= 0x55AA;
+
+      keyindex = (keyindex + kxorw7C92)>>1;
+      kxorw7E8A = data[dataptr];
+      data[dataptr] = (data[dataptr] - tmp_xor_key1) ^ key[keyindex&0xF];
+      dataptr++;
+
+      keyindex += kxorw7E8A;
+      tmp_xor_key1 = data[dataptr];
+      data[dataptr] ^= key[keyindex&0xF]; 
+      dataptr++;
+      key[kxorw7C92&0xF] += kxorw7E8A;
+
+      keyindex ^= tmp_xor_key1;
+      tmp_xor_key2 = data[dataptr];
+      data[dataptr] = (data[dataptr] ^ kxorw7E8A) ^ key[keyindex&0xF];
+      dataptr++;
+      key[tmp_xor_key2&0xF] ^= tmp_xor_key1;
+
+      keyindex ^= tmp_xor_key2;
+      kxorw7C92 = data[dataptr];
+      data[dataptr] += key[keyindex&0xF];
+      dataptr++;
+      key[tmp_xor_key1&0xF] += tmp_xor_key2;
+
+      keyindex += kxorw7C92;
+      kxorw7E8A = data[dataptr];
+      data[dataptr] = (data[dataptr] + tmp_xor_key1) ^ key[keyindex&0xF];
+      dataptr++;
+
+      key[2] ^= tmp_xor_key1;
+      key[4] += tmp_xor_key2;
+      key[6] += kxorw7E8A;
+      key[8] -= kxorw7C92;
+      key[1] ^= key[15];
+      key[3] ^= key[14];
+      key[5] ^= key[13];
+      keyindex += j;
+    }
+
+    memcpy( dataout + fullpos*2, data, sizeof(data) );
+  }
+
+  return datalen*2;
+}
+
+int32_t enpdk(uint8_t* hdrin, uint32_t hdrinlen, uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t dataoutlen)
+{
+  if( hdrinlen<0x100 )
+    return -1;
+
+  uint8_t* hdrdata = datain;
+
+  uint32_t version = *((uint32_t*)&hdrdata[0x08]);
+  uint32_t datalen = *((uint32_t*)&hdrdata[0x20]);
+
+  uint32_t extrahdr = *((uint16_t*)&hdrdata[0x26]) +
+                      *((uint16_t*)&hdrdata[0x28]) +
+                      *((uint16_t*)&hdrdata[0x2C]) +
+                      *((uint16_t*)&hdrdata[0xD0]);
+
+  if( version>=0x1c )
+    extrahdr += hdrdata[0x49];
+
+  uint16_t key[0x10];
+  memcpy( key, &hdrdata[0xE0], sizeof(key) );
+
+  uint16_t kxorw7C92 = key[3]^key[14];
+  uint16_t kxorw7E8A = key[7]^key[15];
+
+  if( (version>=0x15) && (version<=0x17) ) {
+    kxorw7C92 ^= 0x1234; kxorw7E8A ^= 0x5678;
+  }
+  
+  if( dataoutlen < (hdrinlen+datalen) )
+    return -2;
+
+  if( hdrinlen != (0x100 + extrahdr) )
+    return -3;
+
+  memcpy( dataout, hdrdata, hdrinlen );
+
+  uint16_t keyindex = 0;
+
+  for( uint32_t fullpos=0; fullpos<datalen; fullpos+=32 ) {
+    uint16_t data[32];
+    memcpy( data, datain + fullpos*2, sizeof(data) );
+    
+    uint32_t dataptr = 0;
+    for( uint32_t j=0; j<4; j++ ) {
+      keyindex += kxorw7C92;
+      uint16_t tmp_xor_key1 = data[dataptr] - key[keyindex&0xF];
+      data[dataptr] = tmp_xor_key1;
+      dataptr++;
+      key[fullpos&0xF] ^= tmp_xor_key1;
+
+      keyindex += tmp_xor_key1;
+      uint16_t tmp_xor_key2 = (data[dataptr] ^ key[keyindex&0xF]) - kxorw7E8A;
+      data[dataptr] = tmp_xor_key2;
+      dataptr++;
+      key[kxorw7E8A&0xF] ^= kxorw7C92;
+
+      keyindex ^= tmp_xor_key2;
+      kxorw7C92 = data[dataptr] - key[keyindex&0xF]; 
+      data[dataptr] = kxorw7C92;
+      dataptr++;
+      key[kxorw7E8A&0xF] ^= 0x55AA;
+
+      keyindex = (keyindex + kxorw7C92)>>1;
+      kxorw7E8A = (data[dataptr] ^ key[keyindex&0xF]) + tmp_xor_key1;
+      data[dataptr] = kxorw7E8A;
+      dataptr++;
+
+      keyindex += kxorw7E8A;
+      tmp_xor_key1 = data[dataptr] ^ key[keyindex&0xF];
+      data[dataptr] = tmp_xor_key1;
+      dataptr++;
+      key[kxorw7C92&0xF] += kxorw7E8A;
+
+      keyindex ^= tmp_xor_key1;
+      tmp_xor_key2 = (data[dataptr] ^ key[keyindex&0xF]) ^ kxorw7E8A;
+      data[dataptr] = tmp_xor_key2;
+      dataptr++;
+      key[tmp_xor_key2&0xF] ^= tmp_xor_key1;
+
+      keyindex ^= tmp_xor_key2;
+      kxorw7C92 = data[dataptr] - key[keyindex&0xF];
+      data[dataptr] = kxorw7C92;  
+      dataptr++;
+      key[tmp_xor_key1&0xF] += tmp_xor_key2;
+
+      keyindex += kxorw7C92;
+      kxorw7E8A = (data[dataptr] ^ key[keyindex&0xF]) - tmp_xor_key1;
+      data[dataptr] = kxorw7E8A;
+      dataptr++;
+
+      key[2] ^= tmp_xor_key1;
+      key[4] += tmp_xor_key2;
+      key[6] += kxorw7E8A;
+      key[8] -= kxorw7C92;
+      key[1] ^= key[15];
+      key[3] ^= key[14];
+      key[5] ^= key[13];
+      keyindex += j;
+    }
+
+    memcpy( dataout + hdrinlen + fullpos*2, data, sizeof(data) );
+  }
+  
+  return hdrinlen + datalen*2;
+}
