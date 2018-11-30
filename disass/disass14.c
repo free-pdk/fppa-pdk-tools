@@ -84,7 +84,7 @@ char* disass14(struct emuCPU *cpu, uint16_t position, char *buffer)
       sprintf( buffer, r, addr );
   }
   else
-  //7 bit opcodes 0x03.. , 0x0600 - 0x17FF
+  //7 bit opcodes 0x0600 - 0x17FF
   if( (opcode>=0x0600) && (opcode<=0x17FF) )
   {
     int8_t addr = opcode&0x7F;
