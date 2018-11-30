@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "emucpu.h"
 
-//char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer);
+char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer);
 
 char* disass14(struct emuCPU *cpu, uint16_t position, char *buffer);
 
