@@ -20,7 +20,7 @@ int main( int argc, const char * argv [] )
   struct emuCPU ecpu;
   struct emuCPU* cpu = &ecpu;
 
-  if( emuCPUloadPDK(cpu, argv[1]) < 0 ) { 
+  if( emuCPUloadPDK(cpu, argv[1], true) < 0 ) { 
     printf("Error reading input file\n"); 
     return -1; 
   }
@@ -33,13 +33,7 @@ int main( int argc, const char * argv [] )
   //set our own emulation exception handler
   cpu->fnException = emuException;
 
-  //TODO move fixups to specific CPU
-  //debug fixups, seems like writer is doing this... init stuff / rolling code / calibration data / ???
-  cpu->eCode[0x07F6] = 0x0200; //RET 0
-  cpu->eCode[0x07ED] = 0x0200; //RET 0
-  cpu->eCode[0x07EE] = 0x0200; //RET 0
-  cpu->eCode[0x07FE] = 0x0200; //RET 0xXY - calibration code is NOT executed / RET 0xFF - calibration code is executed
-
+  //reset CPU
   cpu->fnReset(cpu,true);
 
   for( uint32_t i=0;i<2000;i++ )

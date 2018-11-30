@@ -93,10 +93,10 @@ enum CPU_EXCEPTION
 };
 
 //init cpu based on type set in cpu structure. Returns negative for errors.
-int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen);
+int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen, bool fixupHighCode);
 
 //load a PDK file. Returns negative for errors.
-int emuCPUloadPDK(struct emuCPU *cpu, const char *filename);
+int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode);
 
 //helper functions for all variants
 void     emuCPUexception(struct emuCPU *cpu, int code);

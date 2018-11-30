@@ -7,7 +7,7 @@
 #include "pdkformat.h"
 #include "cpuvariant.h"
 
-int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen)
+int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen, bool fixupHighCode)
 {
   cpu->maxIO = 0;
   cpu->maxMem = 0;
@@ -31,7 +31,8 @@ int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen)
     case 0x2A06: // PMS154
     case 0x2C06: // PMS154B / PMS154C
     case 0x2AA1: // PFS154 //TODO: much different ? own impl?
-      pmx154_init(cpu); break;
+    case 0x2AA4: // PFC154 //TODO: much different ? own impl?
+      pmx154_init(cpu,fixupHighCode); break;
   }
 
   if( !cpu->fnReset )
@@ -40,7 +41,7 @@ int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen)
   return 0;
 }
 
-int emuCPUloadPDK(struct emuCPU *cpu, const char *filename)
+int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode)
 {
   memset( cpu, 0, sizeof(struct emuCPU) );
 
@@ -58,10 +59,10 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename)
   if( hdrlen<0 )
     return -3;
 
-  if( emuCPUinit(cpu, pdk, hdrlen) < 0 ) //TODO: get real hdr size...
+  if( emuCPUinit(cpu, pdk, hdrlen, fixupHighCode) < 0 )
     return -4; //no emulator found for cpu type
 
-  if( (pdklen-0x100)>(cpu->maxCode*sizeof(uint16_t)) ) //TODO: use real hdr size
+  if( (pdklen-0x100)>(cpu->maxCode*sizeof(uint16_t)) )
     return -5; //code size to big
 
   memset( cpu->eCode, 0xFF, cpu->maxMem );

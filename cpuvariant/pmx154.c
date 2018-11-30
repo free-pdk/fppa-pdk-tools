@@ -117,9 +117,7 @@ void pmx154_peripherals(struct emuCPU *cpu)
 //TODO: IO 0x3F ==> virtual putchar for easy emu
 }
 
-
-
-void pmx154_init(struct emuCPU *cpu)
+void pmx154_init(struct emuCPU *cpu, bool fixupHighCode)
 {
   cpu->maxIO = 64;
   cpu->maxMem = 128;
@@ -131,6 +129,14 @@ void pmx154_init(struct emuCPU *cpu)
   cpu->fnPeripherals = pmx154_peripherals;
   cpu->fnIOName = pmx154_ioname;
 
+  if( fixupHighCode )
+  {
+    //fixups, seems like writer is doing this... init stuff / rolling code / calibration data / ???
+    cpu->eCode[0x07F6] = 0x0200; //RET 0
+    cpu->eCode[0x07ED] = 0x0200; //RET 0
+    cpu->eCode[0x07EE] = 0x0200; //RET 0
+    cpu->eCode[0x07FE] = 0x0200; //RET 0xXY - calibration code is NOT executed / RET 0xFF - calibration code is executed
+  }
+
   pmx154_reset(cpu, true);
 }
-

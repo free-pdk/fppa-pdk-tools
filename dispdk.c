@@ -13,7 +13,7 @@ int main( int argc, const char * argv [] )
   }
 
   struct emuCPU cpu;
-  rc=emuCPUloadPDK(&cpu, argv[1]);
+  rc=emuCPUloadPDK(&cpu, argv[1], false);
 
   printf("MCU_NAME: %s\n", cpu.hdr.mcu_name);
   printf("OTP_ID: %04X\n", cpu.hdr.otp_id);

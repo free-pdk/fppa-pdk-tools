@@ -3,11 +3,11 @@
 
 #include "emucpu.h"
 
-//void pmx130_init(struct emuCPU *cpu);
+//void pmx130_init(struct emuCPU *cpu, bool fixupHighCode);
 
 //void pmx150_init(struct emuCPU *cpu);
 
-void pmx154_init(struct emuCPU *cpu);
+void pmx154_init(struct emuCPU *cpu, bool fixupHighCode);
 
 
 #endif //__INC_CPUVARIANT_H__
