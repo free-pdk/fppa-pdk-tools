@@ -42,6 +42,8 @@ int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen)
 
 int emuCPUloadPDK(struct emuCPU *cpu, const char *filename)
 {
+  memset( cpu, 0, sizeof(struct emuCPU) );
+
   FILE* fin = fopen( filename, "rb");
   if( !fin ) 
     return -1; //could not open file
