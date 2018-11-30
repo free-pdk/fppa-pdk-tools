@@ -5,7 +5,7 @@
 
 //void pmx130_init(struct emuCPU *cpu, bool fixupHighCode);
 
-//void pmx150_init(struct emuCPU *cpu);
+void pmx150_init(struct emuCPU *cpu, bool fixupHighCode);
 
 void pmx154_init(struct emuCPU *cpu, bool fixupHighCode);
 

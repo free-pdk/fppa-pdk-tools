@@ -3,7 +3,7 @@
 
 #include "emucpu.h"
 
-//int opcode13(struct emuCPU *cpu);
+int opcode13(struct emuCPU *cpu);
 
 int opcode14(struct emuCPU *cpu);
 

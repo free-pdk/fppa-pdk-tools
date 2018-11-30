@@ -28,6 +28,11 @@ int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen, bool fixupHigh
 
   switch( cpu->hdr.otp_id )
   {
+    case 0x0B80: // PMS150 / PMC150
+    case 0x1E01: // PMS150B
+    case 0x2A16: // PMS150C
+      pmx150_init(cpu,fixupHighCode); break;
+
     case 0x2A06: // PMS154
     case 0x2C06: // PMS154B / PMS154C
     case 0x2AA1: // PFS154 //TODO: much different ? own impl?
