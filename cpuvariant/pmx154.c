@@ -54,7 +54,7 @@ char* pmx154_ioname(struct emuCPU *cpu, uint8_t io, uint8_t bit, char* buffer)
         case 5:
         case 6:
         case 7: r="CLKMD.CLKSELECT"; break;
-        default: r="CLKCMD";
+        default: r="CLKMD";
       }
       break;
 
