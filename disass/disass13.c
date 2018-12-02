@@ -15,7 +15,7 @@ char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer)
   //special opcode (should be a call, but makes no sense)
   if( 0x1FFF == opcode ) return buffer;
 
-  //13 bit opcodes 0x0000 - 0x00BF
+  //13 bit opcodes 0x0000 - 0x003F
   if( opcode<=0x003F )
   {
     switch( opcode )
