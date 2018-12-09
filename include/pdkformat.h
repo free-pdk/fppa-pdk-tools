@@ -53,8 +53,9 @@ struct T_PDK_HEADER {
 };
 #pragma pack(pop)
 
-int32_t pdkhdrlen(uint8_t* datain, uint32_t datainlen);
-int32_t depdk(uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t dataoutlen);
-int32_t enpdk(uint8_t* hdrin, uint32_t hdrinlen, uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t dataoutlen);
+int32_t  pdkhdrlen(uint8_t* datain, uint32_t datainlen);
+uint32_t pdkchecksum( uint8_t* datain, uint32_t datainlen, uint32_t initval);
+int32_t  depdk(uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t dataoutlen);
+int32_t  enpdk(uint8_t* hdrin, uint32_t hdrinlen, uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t dataoutlen);
 
 #endif //__INC_PDKFORMAT_H__

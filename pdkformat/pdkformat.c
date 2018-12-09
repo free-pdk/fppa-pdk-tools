@@ -29,6 +29,37 @@ int32_t pdkhdrlen(uint8_t* datain, uint32_t datainlen)
   return(0x100 + extrahdr);
 }
 
+uint32_t pdkchecksum( uint8_t* datain, uint32_t datainlen, uint32_t initval)
+{
+  uint16_t* data = (uint16_t*)datain;
+
+  uint32_t  len = (datainlen >> 1) - 1;
+  uint32_t  csum = initval ^ data[len];
+
+  for(;len>0;)
+  {
+    len--;
+
+    uint32_t v6 = *data++;
+    uint32_t v5 = (v6 + len + (csum>>16))&0xFFFF;
+
+    switch ( v5&7 )
+    {
+      case 0: csum += v5 + (v6 << 8) + 1; break;
+      case 1: csum ^= (v6 << 8) + v5 + 3; break;
+      case 2: csum += 4 * v5; break;
+      case 3: csum ^= 16 * v5; break;
+      case 4: csum += 32 * v5; break;
+      case 5: csum ^= (v6 >> 3) + (v5 << 6); break;
+      case 6: csum += (v5 << 7) - (v6 >> 3); break;
+      case 7: csum ^= v6 + (v5 << 8); break;
+    }
+  }
+  return csum;
+}
+
+
+
 int32_t depdk(uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t dataoutlen)
 {
   if( datainlen<0x100 )
