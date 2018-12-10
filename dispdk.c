@@ -26,16 +26,7 @@ int main( int argc, const char * argv [] )
 
   char buf[64] = "-----";
   uint32_t p;
-  for( p=0; p<(cpu.hdr.usable_codesize - cpu.hdr.remain_code_free); p++ )
-  {
-    if( cpu.fnDisassemble) 
-      cpu.fnDisassemble( &cpu, p, buf );
-    printf( "0x%04x:   0x%04x    %s\n", p, cpu.eCode[p], buf );
-  }
-  
-  printf("...\n");
-
-  for( p=cpu.hdr.usable_codesize; p<cpu.hdr.codesize; p++ )
+  for( p=0; p<cpu.hdr.codesize; p++ )
   {
     if( cpu.fnDisassemble) 
       cpu.fnDisassemble( &cpu, p, buf );
