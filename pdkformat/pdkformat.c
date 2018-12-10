@@ -23,8 +23,9 @@ int32_t pdkhdrlen(uint8_t* datain, uint32_t datainlen)
                       *((uint16_t*)&hdrdata[0x2C]) +
                       *((uint16_t*)&hdrdata[0xD0]);
 
+  //package extra info (0 terminated ASCII string of pin names at end of header extra data)
   if( version>=0x1c )
-    extrahdr += hdrdata[0x49];
+    extrahdr += hdrdata[0x49]; //length of the 0 terminated string (including terminating 0)
 
   return(0x100 + extrahdr);
 }
