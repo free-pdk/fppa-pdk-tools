@@ -2,8 +2,7 @@
 
 
 Disassembler: dispdk
- supports 13 bit, 14 bit and 16 bit opcodes
- requires mapping of processor ID in emucpu.c
+ supports 13 bit, 14 bit, 15 bit and 16 bit opcodes
  
 Emulator: emupdk
  supports 14 bit opcodes, no peripheral support yet
