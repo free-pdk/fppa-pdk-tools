@@ -38,6 +38,10 @@ int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen, bool fixupHigh
     case 0x2AA1: // PFS154 //TODO: much different ? own impl?
     case 0x2AA4: // PFC154 //TODO: much different ? own impl?
       pmx154_init(cpu,fixupHighCode); break;
+      
+    default:
+      if( 0 != generic_init(cpu) )
+        return -3;
   }
 
   if( !cpu->fnReset )

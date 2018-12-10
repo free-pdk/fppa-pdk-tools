@@ -9,5 +9,7 @@ void pmx150_init(struct emuCPU *cpu, bool fixupHighCode);
 
 void pmx154_init(struct emuCPU *cpu, bool fixupHighCode);
 
+int generic_init(struct emuCPU *cpu);
+
 
 #endif //__INC_CPUVARIANT_H__
