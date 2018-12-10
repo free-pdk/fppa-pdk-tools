@@ -22,11 +22,12 @@ int main( int argc, const char * argv [] )
   int32_t dataoutlen = depdk( datain, datainlen, dataout, sizeof(dataout) );
   if( dataoutlen<=0 ) { printf("Error decrypting input file\n");return -1; }
 
+  int32_t hdrlen = pdkhdrlen(datain,datainlen);
 
   uint32_t fcsum = *((uint32_t*)&datain[0x0C]);
   *((uint32_t*)&datain[0x0C]) = 0;
 
-  uint32_t csum1 = pdkchecksum( datain, 256, 0 );
+  uint32_t csum1 = pdkchecksum( datain, hdrlen, 0 );
   uint32_t csum2 = pdkchecksum( dataout, dataoutlen, 0 );
 //  uint32_t csum2 = pdkchecksum( datain+..., ..., csum2 );
 
