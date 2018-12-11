@@ -10,8 +10,9 @@ struct T_PDK_HEADER {
   uint32_t version;             //0x08
   uint32_t checksum;            //0x0C
 
-  uint32_t unk_0x10_0;          //0x10
-  uint32_t unk_0x14_3;          //0x14
+  uint32_t tuning_freq_half;    //0x10
+  uint16_t unk_0x14_3;          //0x14
+  uint16_t tuning_voltage_mv;   //0x16
   uint32_t unk_0x18_0x3F30;     //0x18
   uint32_t unk_0x1C_0;          //0x1C
 
@@ -37,7 +38,10 @@ struct T_PDK_HEADER {
 
   uint16_t remain_code_free;    //0x5A
 
-  uint8_t  unk_0x5C_0[0x24];    //0x5C
+  uint16_t unk_0x5C;            //0x5C
+  uint16_t unk_0x5D_maybe_lvd;  //0x5E
+  
+  uint8_t  unk_0x60_0[0x20];    //0x60
 
   char     mcu_name[16];        //0x80
   
