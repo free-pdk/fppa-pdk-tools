@@ -100,18 +100,18 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode);
 
 //helper functions for all variants
 void     emuCPUexception(struct emuCPU *cpu, int code);
-uint8_t  emuCPUioGet(struct emuCPU *cpu, uint8_t addr) __attribute__((always_inline));
-void     emuCPUioPut(struct emuCPU *cpu, uint8_t addr, uint8_t dat) __attribute__((always_inline));
+uint8_t  emuCPUioGet(struct emuCPU *cpu, uint8_t addr);
+void     emuCPUioPut(struct emuCPU *cpu, uint8_t addr, uint8_t dat);
 char*    emuCPUdecodeIO(struct emuCPU *cpu, uint8_t addr, uint8_t bit, char* buffer);
-uint8_t  emuCPUmemGet(struct emuCPU *cpu, uint8_t addr) __attribute__((always_inline));
-void     emuCPUmemPut(struct emuCPU *cpu, uint8_t addr, uint8_t dat) __attribute__((always_inline));
-uint16_t emuCPUcodeGet(struct emuCPU *cpu, uint16_t addr) __attribute__((always_inline));
-void     emuCPUstackPush(struct emuCPU *cpu, uint8_t dat) __attribute__((always_inline));
-uint8_t  emuCPUstackPop(struct emuCPU *cpu) __attribute__((always_inline));
-void     emuCPUstackPushW(struct emuCPU *cpu, uint16_t dat) __attribute__((always_inline));
-uint16_t emuCPUstackPopW(struct emuCPU *cpu) __attribute__((always_inline));
-uint8_t  emuCPUaddSolveFlagsVACZ(int16_t value1, int16_t value2, int16_t c) __attribute__((always_inline));
-uint8_t  emuCPUsubSolveFlagsVACZ(int16_t value1, int16_t value2, int16_t c) __attribute__((always_inline));
+uint8_t  emuCPUmemGet(struct emuCPU *cpu, uint8_t addr);
+void     emuCPUmemPut(struct emuCPU *cpu, uint8_t addr, uint8_t dat);
+uint16_t emuCPUcodeGet(struct emuCPU *cpu, uint16_t addr);
+void     emuCPUstackPush(struct emuCPU *cpu, uint8_t dat);
+uint8_t  emuCPUstackPop(struct emuCPU *cpu);
+void     emuCPUstackPushW(struct emuCPU *cpu, uint16_t dat);
+uint16_t emuCPUstackPopW(struct emuCPU *cpu);
+uint8_t  emuCPUaddSolveFlagsVACZ(int16_t value1, int16_t value2, int16_t c);
+uint8_t  emuCPUsubSolveFlagsVACZ(int16_t value1, int16_t value2, int16_t c);
 
 #endif // __INC_EMUCPU_H__
 
