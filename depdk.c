@@ -18,14 +18,15 @@ int main( int argc, const char * argv [] )
   int32_t datainlen = fread( datain, 1, sizeof(datain), fin );
   if( datainlen<=0 ) { printf("Error reading input file\n");return -1; }
   fclose(fin);
-  
+
   int32_t dataoutlen = depdk( datain, datainlen, dataout, sizeof(dataout) );
   if( dataoutlen<=0 ) { printf("Error decrypting input file\n");return -1; }
 
   int32_t hdrlen = pdkhdrlen(datain,datainlen);
 
-  uint32_t fcsum = *((uint32_t*)&datain[0x0C]);
-  *((uint32_t*)&datain[0x0C]) = 0;
+  uint32_t fcsum;
+  memcpy( &fcsum, &datain[0x0C], sizeof(fcsum) );
+  memset( &datain[0x0C], 0, 4 );
 
   uint32_t csum1 = pdkchecksum( datain, hdrlen, 0 );
   uint32_t csum2 = pdkchecksum( dataout, dataoutlen, 0 );
@@ -42,8 +43,9 @@ int main( int argc, const char * argv [] )
   else
   if( 0==csums )
     csums++;
-    
-  uint32_t fcsiz = *((uint32_t*)&datain[0x20]);
+
+  uint32_t fcsiz;
+  memcpy( &fcsiz, &datain[0x20], sizeof(fcsiz) );
   switch( fcsiz )
   {
     case 1024: csums&=0xFF1FFF; break;
