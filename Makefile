@@ -2,6 +2,10 @@ CC ?= gcc
 RM ?= rm -rf
 STRIP ?= strip
 
+ifeq ($(OS),Windows_NT)
+   EXE_EXTENSION := .exe
+endif
+
 CFLAGS += -Wall -O2 -std=c99 -Iinclude
 
 DEP_CORE=  $(wildcard include/*.h)
@@ -17,20 +21,20 @@ all: depdk dispdk emupdk
 
 depdk: $(DEP_CORE) $(OBJ_CORE) depdk.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o depdk depdk.c pdkformat/pdkformat.o $(LIBS)
-	$(STRIP) depdk
+	$(STRIP) depdk$(EXE_EXTENSION)
 
 dispdk: $(DEP_CORE) $(OBJ_CORE) dispdk.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o dispdk dispdk.c $(OBJ_CORE) $(LIBS)
-	$(STRIP) depdk
+	$(STRIP) dispdk$(EXE_EXTENSION)
 
 emupdk: $(DEP_CORE) $(OBJ_CORE) emupdk.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o emupdk emupdk.c $(OBJ_CORE) $(LIBS)
-	$(STRIP) depdk
+	$(STRIP) emupdk$(EXE_EXTENSION)
 
 clean:
 	$(RM) $(OBJ_CORE)
-	$(RM) depdk
-	$(RM) dispdk
-	$(RM) emupdk
+	$(RM) depdk$(EXE_EXTENSION)
+	$(RM) dispdk$(EXE_EXTENSION)
+	$(RM) emupdk$(EXE_EXTENSION)
 
 dist-clean: clean
