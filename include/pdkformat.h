@@ -30,7 +30,7 @@ struct T_PDK_HEADER {
   uint8_t  otp_way;             //0x3E
   uint8_t  boot_type;           //0x3F
 
-  uint8_t  unk_0x40_0[8];       //0x40
+  uint8_t  unk_0x40_0[9];       //0x40
 
   uint8_t  extra_length_pinmap; //0x49
 
@@ -39,12 +39,12 @@ struct T_PDK_HEADER {
   uint16_t remain_code_free;    //0x5A
 
   uint16_t unk_0x5C;            //0x5C
-  uint16_t unk_0x5D_maybe_lvd;  //0x5E
-  
+  uint16_t unk_0x5E_maybe_lvd;  //0x5E
+
   uint8_t  unk_0x60_0[0x20];    //0x60
 
   char     mcu_name[16];        //0x80
-  
+
   uint8_t  unk_0x90_x[16];      //0x90
 
   char     compiler[16];        //0xA0
@@ -56,7 +56,7 @@ struct T_PDK_HEADER {
   uint8_t  unk_0xD2_0[14];      //0xD2
 
   uint8_t  key[32];             //0xE0
-  
+
   uint8_t  extradata[256];      //0x100
 };
 #pragma pack(pop)
