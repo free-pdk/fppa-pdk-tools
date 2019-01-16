@@ -81,7 +81,7 @@ char* pmx154_ioname(struct emuCPU *cpu, uint8_t io, uint8_t bit, char* buffer)
     case 0x06: r="T16M"; break;
 
     case 0x08: r="MISC"; break; //differs from CPU to CPU
- 
+
     case 0x0A: r="EOSCR"; break;
     case 0x0B: r="IHRCR"; break;
     case 0x0C: r="INTEGS"; break;
@@ -95,6 +95,9 @@ char* pmx154_ioname(struct emuCPU *cpu, uint8_t io, uint8_t bit, char* buffer)
     case 0x14: if(bit<8) sprintf(buffer,"PB.%d",bit);  else  r="PB";  break;
     case 0x15: if(bit<8) sprintf(buffer,"PBC.%d",bit);  else  r="PBC";  break;
     case 0x16: if(bit<8) sprintf(buffer,"PBPH.%d",bit);  else  r="PBPH";  break;
+
+    case 0x1A: r="BGTR"; break;
+      case 0x1B: r="MISC_LVR"; break;
 
     default:
       r="?";
