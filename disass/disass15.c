@@ -25,6 +25,8 @@ char* disass15(struct emuCPU *cpu, uint16_t position, char *buffer)
       case 0x0006: r="LDSPTL"; break;
       case 0x0007: r="LDSPTH"; break;
 
+      case 0x0020: r="TRAP"; break;
+
       case 0x0060: r="ADDC A"; break;
       case 0x0061: r="SUBC A"; break;
       case 0x0062: r="IZSN A"; break;

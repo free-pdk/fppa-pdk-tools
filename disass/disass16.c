@@ -40,6 +40,8 @@ char* disass16(struct emuCPU *cpu, uint16_t position, char *buffer)
       case 0x001E: r="SWAP A"; break;
       case 0x001F: r="DELAY A"; break;
 
+      case 0x0020: r="TRAP"; break;
+
       case 0x0030: r="WDRESET"; break;
 
       case 0x0032: r="PUSHAF"; break;
