@@ -72,7 +72,7 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode)
   if( emuCPUinit(cpu, pdk, hdrlen, fixupHighCode) < 0 )
     return -4; //no emulator found for cpu type
 
-  if( (pdklen-0x100)>(cpu->maxCode*sizeof(uint16_t)) )
+  if( (pdklen-hdrlen)>(cpu->maxCode*sizeof(uint16_t)) )
     return -5; //code size to big
 
   memset( cpu->eCode, 0xFF, cpu->maxMem );
