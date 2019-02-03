@@ -23,7 +23,8 @@ int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen, bool fixupHigh
 
   if( hdrlen>sizeof(cpu->hdr) )
     return -1;
-  memcpy( &cpu->hdr, hdr, hdrlen );
+  if( hdr && hdrlen)
+    memcpy( &cpu->hdr, hdr, hdrlen );
   cpu->hdrlen = hdrlen;
 
   switch( cpu->hdr.otp_id )
@@ -79,9 +80,44 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode)
     return -6; //error decrypting input file
 
   cpu->fnReset( cpu, true );
-  
+
   return 0;
 }
+
+int emuCPUloadBIN(struct emuCPU *cpu, const char *filename, bool fixupHighCode, uint16_t otp_id)
+{
+  FILE* fin = fopen( filename, "rb");
+  if( !fin ) 
+    return -1; //could not open file
+
+  uint8_t bin[10000];
+  int binlen =fread( bin, 1, sizeof(bin), fin );
+  if( binlen<=0 ) 
+    return -2; //error reading input file
+  fclose(fin);
+
+  //manually setup minimal cpu header
+  memset( cpu, 0, sizeof(struct emuCPU) );
+  cpu->hdrlen = sizeof(cpu->hdr);
+  cpu->hdr.otp_id = otp_id;
+
+  if( emuCPUinit(cpu, 0, 0, fixupHighCode) < 0 )
+    return -4; //no emulator found for cpu type
+
+  if( binlen>(cpu->maxCode*sizeof(uint16_t)) )
+    return -5; //code size to big
+
+  memset( cpu->eCode, 0xFF, cpu->maxMem );
+
+  memcpy( cpu->eCode, bin, binlen );
+  cpu->hdr.codesize = binlen/sizeof(uint16_t);
+
+  cpu->fnReset( cpu, true );
+
+  return 0;
+}
+
+
 
 void emuCPUexception(struct emuCPU *cpu, int code)
 {
