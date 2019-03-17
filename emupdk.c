@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <inttypes.h>
 #include <string.h>
 #include <stdlib.h>
 #include "emucpu.h"
@@ -12,17 +13,37 @@ void emuException(struct emuCPU *cpu, int code)
 
 int main( int argc, const char * argv [] )
 {
-  if( 2 != argc ) {
-    printf("usage: %s input.pdk\n\n", argv[0]);
+  if( (argc<2) || (argc>3) ) {
+    printf("usage: %s [otpidhex] inputfile\n"
+           "example: %s input.pdk\n"
+           "example: %s 2AA1 input.bin\n",
+           argv[0], argv[0], argv[0]);
     return 0;
   }
 
   struct emuCPU ecpu;
   struct emuCPU* cpu = &ecpu;
 
-  if( emuCPUloadPDK(cpu, argv[1], true) < 0 ) { 
-    printf("Error reading input file\n"); 
-    return -1; 
+  if( 3 == argc )
+  {
+    uint16_t otp_id;
+    if( 1 != sscanf(argv[1], "%" SCNx16, &otp_id) )
+    {
+      printf("Error wrong otp id: %s\n",argv[1]);
+      return -1; 
+    }
+
+    if( emuCPUloadBIN(cpu, argv[2], false, otp_id) < 0 ) {
+      printf("Error reading input file\n"); 
+      return -1; 
+    }
+  }
+  else
+  {
+    if( emuCPUloadPDK(cpu, argv[1], true) < 0 ) { 
+      printf("Error reading input file\n"); 
+      return -1; 
+    }
   }
 
   if( !cpu->fnReset || !cpu->fnExecute  ) {
