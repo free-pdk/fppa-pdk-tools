@@ -16,7 +16,7 @@ char* disass15(struct emuCPU *cpu, uint16_t position, char *buffer)
   if( 0x7FFF == opcode ) return buffer;
 
   //15 bit opcodes 0x0000 - 0x007F
-  if( opcode<=0x00BF )
+  if( opcode<=0x007F )
   {
     switch( opcode )
     {
@@ -60,10 +60,10 @@ char* disass15(struct emuCPU *cpu, uint16_t position, char *buffer)
   }
   else
   //9 bit opcodes 0x0080 - 0x01FF
-  if( (opcode>=0x00C0) && (opcode<=0x01FF) )
+  if( (opcode>=0x0080) && (opcode<=0x01FF) )
   {
-    uint8_t addr = opcode&0x3F;
-    switch( opcode&0x7FC0 )
+    uint8_t addr = opcode&0x7F;
+    switch( opcode&0x7F80 )
     {
       case 0x0080: sprintf(buffer,"XOR IO(0x%02X), A  ;%s", addr, emuCPUdecodeIO(cpu,addr,0xFF,tmp)); break;
       case 0x0100: sprintf(buffer,"MOV IO(0x%02X), A  ;%s", addr, emuCPUdecodeIO(cpu,addr,0xFF,tmp)); break;
