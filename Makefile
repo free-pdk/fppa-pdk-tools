@@ -14,7 +14,7 @@ SRC_CORE=  pdkformat/pdkformat.c
 SRC_CORE+= emucpu/emucpu.c
 SRC_CORE+= opcode/opcode13.c opcode/opcode14.c opcode/opcode15.c opcode/opcode16.c
 SRC_CORE+= disass/disass13.c disass/disass14.c disass/disass15.c disass/disass16.c
-SRC_CORE+= cpuvariant/generic.c cpuvariant/pmx150.c cpuvariant/pmx154.c
+SRC_CORE+= cpuvariant/generic.c cpuvariant/pmx150.c cpuvariant/pmx154.c cpuvariant/pmx173.c
 OBJ_CORE=  $(subst .c,.o,$(SRC_CORE))
 
 all: depdk dispdk emupdk
