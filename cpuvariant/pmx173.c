@@ -17,7 +17,7 @@ void pmx173_reset(struct emuCPU *cpu, bool clearRAM)
   cpu->eIO[0x0D] = 0xFF;
   cpu->eIO[0x0E] = 0xFF;
 
-  ePC = 0; 
+  ePC = 0;
   eA = 0; //???
   eGINTEnabled = false;
   eInterruptActive = false;
@@ -153,8 +153,8 @@ void pmx173_init(struct emuCPU *cpu, bool fixupHighCode)
 {
   cpu->maxIO = 64;
   cpu->maxMem = 256;
-  cpu->maxCode = 2048;
-  
+  cpu->maxCode = 3096;
+
   cpu->fnReset = pmx173_reset;
   cpu->fnExecute = opcode15;
   cpu->fnDisassemble = disass15;

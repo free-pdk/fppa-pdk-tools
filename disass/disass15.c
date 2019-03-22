@@ -91,7 +91,7 @@ char* disass15(struct emuCPU *cpu, uint16_t position, char *buffer)
   //7 bit opcodes 0x0C00 - 0x2FFF
   if( (opcode>=0x0C00) && (opcode<=0x2FFF) )
   {
-    int8_t addr = opcode&0xFF;
+    uint8_t addr = opcode&0xFF;
     switch( opcode & 0x7F00 )
     {
       case 0x0C00: r="COMP A, [0x%02X]"; break;
@@ -153,10 +153,10 @@ char* disass15(struct emuCPU *cpu, uint16_t position, char *buffer)
     }
     if(r) 
       sprintf( buffer, r, k );
-  }                
+  }
   else
   //5 bit opcodes 0x3000 - 0x4FFF, 0x5C00 - 0x5FFF
-  if( ((opcode>=0x3000) && (opcode<=0x4FFF)) || (0x5C00 == (opcode&0x7F00)) )
+  if( ((opcode>=0x3000) && (opcode<=0x4FFF)) || (0x5C00 == (opcode&0x7C00)) )
   {
     uint8_t bit = (opcode>>7)&7;
     uint8_t addr = opcode&0x7F;

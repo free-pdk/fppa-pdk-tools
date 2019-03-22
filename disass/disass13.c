@@ -89,7 +89,7 @@ char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer)
   //7 bit opcodes 0x0400 - 0x0BFF
   if( (opcode>=0x0400) && (opcode<=0x0BFF) )
   {
-    int8_t addr = opcode&0x3F;
+    uint8_t addr = opcode&0x3F;
     switch( opcode & 0x1FC0 )
     {
       case 0x0400: r="ADD [0x%02X], A"; break;
@@ -147,7 +147,7 @@ char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer)
     }
     if(r) 
       sprintf( buffer, r, k );
-  }                
+  }
   else
   //5 bit opcodes 0x0200 - 0x03FF
   if( 0x0200 == (opcode&0x1E00) )

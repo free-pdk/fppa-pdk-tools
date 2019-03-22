@@ -39,7 +39,7 @@ int main( int argc, const char * argv [] )
     }
     otp_id = cpu.hdr.otp_id;
   }
-  
+
   if( rc < 0 ) {
     if( -4 == rc )
       printf("Error unsupported CPU OTP_ID: %04X\n",otp_id);

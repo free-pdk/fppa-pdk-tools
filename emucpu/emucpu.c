@@ -59,7 +59,7 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode)
   memset( cpu, 0, sizeof(struct emuCPU) );
 
   FILE* fin = fopen( filename, "rb");
-  if( !fin ) 
+  if( !fin )
     return -1; //could not open file
 
   uint8_t pdk[10000];

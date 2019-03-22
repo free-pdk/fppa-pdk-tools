@@ -65,7 +65,7 @@ int32_t depdk(uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t da
 {
   if( datainlen<0x100 )
     return -1;
-    
+
   uint8_t* hdrdata = datain;
 
   uint32_t version = *((uint32_t*)&hdrdata[0x08]);
@@ -88,7 +88,7 @@ int32_t depdk(uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t da
   if( (version>=0x15) && (version<=0x17) ) {
     kxorw7C92 ^= 0x1234; kxorw7E8A ^= 0x5678;
   }
-  
+
   if( dataoutlen<datalen )
     return -2;
 
@@ -192,7 +192,7 @@ int32_t enpdk(uint8_t* hdrin, uint32_t hdrinlen, uint8_t* datain, uint32_t datai
   if( (version>=0x15) && (version<=0x17) ) {
     kxorw7C92 ^= 0x1234; kxorw7E8A ^= 0x5678;
   }
-  
+
   if( dataoutlen < (hdrinlen+datalen) )
     return -2;
 
@@ -206,7 +206,7 @@ int32_t enpdk(uint8_t* hdrin, uint32_t hdrinlen, uint8_t* datain, uint32_t datai
   for( uint32_t fullpos=0; fullpos<datalen; fullpos+=32 ) {
     uint16_t data[32];
     memcpy( data, datain + fullpos*2, sizeof(data) );
-    
+
     uint32_t dataptr = 0;
     for( uint32_t j=0; j<4; j++ ) {
       keyindex += kxorw7C92;
@@ -267,6 +267,6 @@ int32_t enpdk(uint8_t* hdrin, uint32_t hdrinlen, uint8_t* datain, uint32_t datai
 
     memcpy( dataout + hdrinlen + fullpos*2, data, sizeof(data) );
   }
-  
+
   return hdrinlen + datalen*2;
 }
