@@ -78,8 +78,8 @@ char* pmx150_ioname(struct emuCPU *cpu, uint8_t io, uint8_t bit, char* buffer)
 
     case 0x06: r="T16M"; break;
 
-    case 0x1B: r="MISC"; break; //differs from CPU to CPU
- 
+    case 0x09: r="TM2B"; break;
+    case 0x0A: r="EOSCR"; break;
     case 0x0B: r="IHRCR"; break;
     case 0x0C: r="INTEGS"; break;
     case 0x0D: if(bit<8) sprintf(buffer,"PADIER.%d",bit); else r="PADIER";  break;
@@ -87,6 +87,16 @@ char* pmx150_ioname(struct emuCPU *cpu, uint8_t io, uint8_t bit, char* buffer)
     case 0x10: if(bit<8) sprintf(buffer,"PA.%d",bit);  else r="PA";  break;
     case 0x11: if(bit<8) sprintf(buffer,"PAC.%d",bit);  else r="PAC";  break;
     case 0x12: if(bit<8) sprintf(buffer,"PAPH.%d",bit);  else r="PAPH";  break;
+
+    case 0x17: r="TM2S"; break;
+
+    case 0x19: r="BGTR"; break;
+    case 0x1A: r="GPCC"; break;
+    case 0x1B: r="MISC"; break;
+    case 0x1C: r="TM2C"; break;
+    case 0x1D: r="TM2CT"; break;
+    case 0x1E: r="GPCS"; break;
+    case 0x1F: r="ILRCR"; break;
 
     default:
       r="?";
