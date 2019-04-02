@@ -72,7 +72,8 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode)
   if( hdrlen<0 )
     return -3;
 
-  if( emuCPUinit(cpu, pdk, hdrlen, fixupHighCode) < 0 )
+  //pre init cpu to test if supported
+  if( emuCPUinit(cpu, pdk, hdrlen, false) < 0 )
     return -4; //no emulator found for cpu type
 
   if( (pdklen-hdrlen)>(cpu->maxCode*sizeof(uint16_t)) )
@@ -81,6 +82,10 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode)
   memset( cpu->eCode, 0xFF, cpu->maxMem );
   if( depdk( pdk, pdklen, (uint8_t*)cpu->eCode, cpu->maxCode*sizeof(uint16_t) ) < 0 )
     return -6; //error decrypting input file
+
+  //init cpu with loaded program
+  if( emuCPUinit(cpu, pdk, hdrlen, fixupHighCode) < 0 )
+    return -7; //emulator error
 
   cpu->fnReset( cpu, true );
 
