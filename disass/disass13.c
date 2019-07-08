@@ -123,7 +123,7 @@ char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer)
       case 0x0B00: r="SRC [0x%02X]"; break;
       case 0x0B40: r="SLC [0x%02X]"; break;
       case 0x0B80: r="CEQSN A, [0x%02X]"; break;
-      case 0x0BC0: r="CNEQSN A, [0x%02X]"; break;
+      //case 0x0BC0: r="CNEQSN A, [0x%02X]"; break; //this INS is not implemented
     }
     if(r) 
       sprintf( buffer, r, addr );
@@ -139,7 +139,7 @@ char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer)
       case 0x1000: r="ADD A, 0x%02X"; break;
       case 0x1100: r="SUB A, 0x%02X"; break;
       case 0x1200: r="CEQSN A, 0x%02X"; break;
-      case 0x1300: r="CNEQSN A, 0x%02X"; break;
+      //case 0x1300: r="CNEQSN A, 0x%02X"; break; //this INS is not implemented
       case 0x1400: r="AND A, 0x%02X"; break;
       case 0x1500: r="OR A, 0x%02X"; break;
       case 0x1600: r="XOR A, 0x%02X"; break;
