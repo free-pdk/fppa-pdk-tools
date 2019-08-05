@@ -153,13 +153,13 @@ char* disass13(struct emuCPU *cpu, uint16_t position, char *buffer)
   if( 0x0200 == (opcode&0x1E00) )
   {
     uint8_t bit = (opcode>>5)&7;
-    uint8_t addr = opcode&0x1E;
-    switch( opcode & 0x1F01 )
+    uint8_t addr = opcode&0xF;
+    switch( opcode & 0x1F10 )
     {
       case 0x0200: sprintf(buffer,"T0SN [0x%02X].%d", addr,bit); break;
-      case 0x0201: sprintf(buffer,"T1SN [0x%02X].%d", addr,bit); break;
+      case 0x0210: sprintf(buffer,"T1SN [0x%02X].%d", addr,bit); break;
       case 0x0300: sprintf(buffer,"SET0 [0x%02X].%d", addr,bit); break;
-      case 0x0301: sprintf(buffer,"SET1 [0x%02X].%d", addr,bit); break;
+      case 0x0310: sprintf(buffer,"SET1 [0x%02X].%d", addr,bit); break;
     }
   }
   else
