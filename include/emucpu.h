@@ -101,6 +101,9 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode);
 //load a BIN file, rerquires OTP_ID as parameter to select CPU type. Returns negative for errors.
 int emuCPUloadBIN(struct emuCPU *cpu, const char *filename, bool fixupHighCode, uint16_t otp_id);
 
+//load a IHEX file, rerquires OTP_ID as parameter to select CPU type. Returns negative for errors.
+int emuCPUloadIHEX(struct emuCPU *cpu, const char *filename, uint16_t otp_id);
+
 //helper functions for all variants
 void     emuCPUexception(struct emuCPU *cpu, int code);
 uint8_t  emuCPUioGet(struct emuCPU *cpu, uint8_t addr);

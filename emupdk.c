@@ -16,8 +16,9 @@ int main( int argc, const char * argv [] )
   if( (argc<2) || (argc>3) ) {
     printf("usage: %s [otpidhex] inputfile\n"
            "example: %s input.pdk\n"
-           "example: %s 2AA1 input.bin\n",
-           argv[0], argv[0], argv[0]);
+           "example: %s 2AA1 input.bin\n"
+           "example: %s 2AA1 input.ihex\n",
+           argv[0], argv[0], argv[0], argv[0]);
     return 0;
   }
 
@@ -33,7 +34,8 @@ int main( int argc, const char * argv [] )
       return -1; 
     }
 
-    if( emuCPUloadBIN(cpu, argv[2], false, otp_id) < 0 ) {
+    if( (emuCPUloadIHEX(cpu, argv[2], otp_id) < 0) &&
+        (emuCPUloadBIN(cpu, argv[2], false, otp_id) < 0) ) {
       printf("Error reading input file\n"); 
       return -1; 
     }

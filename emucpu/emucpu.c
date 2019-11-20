@@ -5,6 +5,7 @@
 
 #include "emucpu.h"
 #include "pdkformat.h"
+#include "fpdkihex8.h"
 #include "cpuvariant.h"
 
 int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen, bool fixupHighCode)
@@ -79,7 +80,7 @@ int emuCPUloadPDK(struct emuCPU *cpu, const char *filename, bool fixupHighCode)
   if( (pdklen-hdrlen)>(cpu->maxCode*sizeof(uint16_t)) )
     return -5; //code size to big
 
-  memset( cpu->eCode, 0xFF, cpu->maxMem );
+  memset( cpu->eCode, 0xFF, cpu->maxCode*sizeof(uint16_t) );
   if( depdk( pdk, pdklen, (uint8_t*)cpu->eCode, cpu->maxCode*sizeof(uint16_t) ) < 0 )
     return -6; //error decrypting input file
 
@@ -115,10 +116,44 @@ int emuCPUloadBIN(struct emuCPU *cpu, const char *filename, bool fixupHighCode, 
   if( binlen>(cpu->maxCode*sizeof(uint16_t)) )
     return -5; //code size to big
 
-  memset( cpu->eCode, 0xFF, cpu->maxMem );
+  memset( cpu->eCode, 0xFF, cpu->maxCode*sizeof(uint16_t) );
 
   memcpy( cpu->eCode, bin, binlen );
   cpu->hdr.codesize = binlen/sizeof(uint16_t);
+
+  cpu->fnReset( cpu, true );
+
+  return 0;
+}
+
+int emuCPUloadIHEX(struct emuCPU *cpu, const char *filename, uint16_t otp_id)
+{
+  uint16_t bin[0x2000];
+  memset( bin, 0xff, 0x2000);
+  if( FPDKIHEX8_ReadFile(filename, bin, 0x2000) < 0 )
+    return -1; //error reading input file
+
+  //manually setup minimal cpu header
+  memset( cpu, 0, sizeof(struct emuCPU) );
+  cpu->hdrlen = sizeof(cpu->hdr);
+  cpu->hdr.otp_id = otp_id;
+
+  if( emuCPUinit(cpu, 0, 0, false) < 0 )
+    return -2; //no emulator found for cpu type
+
+  memset( cpu->eCode, 0xFF, cpu->maxCode*sizeof(uint16_t) );
+
+  uint32_t len = 0;
+  for( uint32_t p=0; p<cpu->maxCode; p++)
+  {
+    if( (bin[p*2] & 0xFF00) ||  (bin[p*2+1] & 0xFF00) )
+    {
+      cpu->eCode[p] = (bin[p*2]&0xFF) | ((bin[p*2+1]&0xFF)<<8);
+      len = p + 1;
+    }
+  }
+
+  cpu->hdr.codesize = len;
 
   cpu->fnReset( cpu, true );
 

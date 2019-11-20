@@ -10,7 +10,7 @@ CFLAGS += -Wall -O2 -std=c99 -Iinclude
 
 DEP_CORE=  $(wildcard include/*.h)
 
-SRC_CORE=  pdkformat/pdkformat.c
+SRC_CORE=  pdkformat/pdkformat.c ihex/fpdkihex8.c
 SRC_CORE+= emucpu/emucpu.c
 SRC_CORE+= opcode/opcode13.c opcode/opcode14.c opcode/opcode15.c opcode/opcode16.c
 SRC_CORE+= disass/disass13.c disass/disass14.c disass/disass15.c disass/disass16.c
