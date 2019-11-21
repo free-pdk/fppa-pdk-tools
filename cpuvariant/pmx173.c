@@ -165,10 +165,11 @@ void pmx173_init(struct emuCPU *cpu, bool fixupHighCode)
   {
     //fixups, seems like writer is doing this... init stuff / rolling code / calibration data / ???
     cpu->eCode[0x0BF6] = 0x0200; //RET 0
-    cpu->eCode[0x0BED] = 0x0200; //RET 0
-    cpu->eCode[0x0BEE] = 0x0200; //RET 0
     cpu->eCode[0x0BFE] = 0x0200; //RET 0xXY - calibration code is NOT executed / RET 0xFF - calibration code is executed
   }
+
+  cpu->eCode[0x0BED] = 0x027F; //IHRCR factory calibration
+  cpu->eCode[0x0BEE] = 0x026A; //BGTR factory calibration
 
   pmx173_reset(cpu, true);
 }

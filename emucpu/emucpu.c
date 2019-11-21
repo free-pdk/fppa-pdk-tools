@@ -24,6 +24,7 @@ int emuCPUinit(struct emuCPU *cpu, uint8_t* hdr, uint32_t hdrlen, bool fixupHigh
 
   if( hdrlen>sizeof(cpu->hdr) )
     return -1;
+
   if( hdr && hdrlen)
     memcpy( &cpu->hdr, hdr, hdrlen );
   cpu->hdrlen = hdrlen;
@@ -110,7 +111,8 @@ int emuCPUloadBIN(struct emuCPU *cpu, const char *filename, bool fixupHighCode, 
   cpu->hdrlen = sizeof(cpu->hdr);
   cpu->hdr.otp_id = otp_id;
 
-  if( emuCPUinit(cpu, 0, 0, fixupHighCode) < 0 )
+  //pre init cpu to test if supported
+  if( emuCPUinit(cpu, 0, 0, false) < 0 )
     return -4; //no emulator found for cpu type
 
   if( binlen>(cpu->maxCode*sizeof(uint16_t)) )
@@ -120,6 +122,10 @@ int emuCPUloadBIN(struct emuCPU *cpu, const char *filename, bool fixupHighCode, 
 
   memcpy( cpu->eCode, bin, binlen );
   cpu->hdr.codesize = binlen/sizeof(uint16_t);
+
+  //init cpu with loaded program
+  if( emuCPUinit(cpu, 0, 0, fixupHighCode) < 0 )
+    return -6; //no emulator found for cpu type
 
   cpu->fnReset( cpu, true );
 
@@ -138,8 +144,9 @@ int emuCPUloadIHEX(struct emuCPU *cpu, const char *filename, uint16_t otp_id)
   cpu->hdrlen = sizeof(cpu->hdr);
   cpu->hdr.otp_id = otp_id;
 
+  //pre init cpu to test if supported
   if( emuCPUinit(cpu, 0, 0, false) < 0 )
-    return -2; //no emulator found for cpu type
+    return -4; //no emulator found for cpu type
 
   memset( cpu->eCode, 0xFF, cpu->maxCode*sizeof(uint16_t) );
 
@@ -152,6 +159,10 @@ int emuCPUloadIHEX(struct emuCPU *cpu, const char *filename, uint16_t otp_id)
       len = p + 1;
     }
   }
+
+  //init cpu with loaded program
+  if( emuCPUinit(cpu, 0, 0, false) < 0 )
+    return -6; //no emulator found for cpu type
 
   cpu->hdr.codesize = len;
 
