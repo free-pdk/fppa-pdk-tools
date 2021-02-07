@@ -89,7 +89,7 @@ int32_t depdk(uint8_t* datain, uint32_t datainlen, uint8_t* dataout, uint32_t da
     kxorw7C92 ^= 0x1234; kxorw7E8A ^= 0x5678;
   }
   if( version==0x1D ) {
-    kxorw7C92 = key[4]^key[13]^0x1234;
+    kxorw7C92 = key[4]^key[15]^0x1234;
     kxorw7E8A = key[8]^key[10]^0x57AE;
   }
 
